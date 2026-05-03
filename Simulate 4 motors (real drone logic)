@@ -1,0 +1,46 @@
+const int pA = 2;
+const int pB = 4;
+const int pC = 5;
+const int pD = 18;
+
+String action = "forward";  // test value
+
+void setup() {
+  Serial.begin(115200);
+
+  ledcAttach(pA, 5000, 8);
+  ledcAttach(pB, 5000, 8);
+  ledcAttach(pC, 5000, 8);
+  ledcAttach(pD, 5000, 8);
+}
+
+void loop() {
+
+  if (action == "forward") {
+    ledcWrite(pB, 200);
+    ledcWrite(pC, 200);
+    ledcWrite(pA, 80);
+    ledcWrite(pD, 80);
+  }
+
+  if (action == "backward") {
+    ledcWrite(pB, 80);
+    ledcWrite(pC, 80);
+    ledcWrite(pA, 200);
+    ledcWrite(pD, 200);
+  }
+
+  if (action == "right") {
+    ledcWrite(pB, 200);
+    ledcWrite(pC, 80);
+    ledcWrite(pA, 200);
+    ledcWrite(pD, 80);
+  }
+
+  if (action == "left") {
+    ledcWrite(pB, 80);
+    ledcWrite(pC, 200);
+    ledcWrite(pA, 80);
+    ledcWrite(pD, 200);
+  }
+}
