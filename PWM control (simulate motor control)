@@ -1,0 +1,25 @@
+#include <WiFi.h>
+
+const int ledPin = 2;
+const int pwmChannel = 0;
+const int freq = 5000;
+const int pwmResolution = 8;
+
+void setup() {
+  Serial.begin(115200);
+
+  ledcSetup(pwmChannel, freq, pwmResolution);
+  ledcAttachPin(ledPin, pwmChannel);
+}
+
+void loop() {
+  for (int duty = 0; duty <= 255; duty++) {
+    ledcWrite(pwmChannel, duty);
+    delay(10);
+  }
+
+  for (int duty = 255; duty >= 0; duty--) {
+    ledcWrite(pwmChannel, duty);
+    delay(10);
+  }
+}
