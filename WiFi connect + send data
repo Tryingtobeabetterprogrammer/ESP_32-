@@ -1,0 +1,38 @@
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+const char* ssid = "Wokwi-GUEST";
+const char* password = "";
+
+void setup() {
+  Serial.begin(115200);
+
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting");
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("\nConnected to WiFi");
+
+  // Send data
+  HTTPClient http;
+  http.begin("http://httpbin.org/get"); // test server
+
+  int httpResponseCode = http.GET();
+
+  if (httpResponseCode > 0) {
+    String payload = http.getString();
+    Serial.println("Response:");
+    Serial.println(payload);
+  } else {
+    Serial.println("Error sending request");
+  }
+
+  http.end();
+}
+
+void loop() {
+}
