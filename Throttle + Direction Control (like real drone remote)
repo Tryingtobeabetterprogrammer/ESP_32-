@@ -1,0 +1,53 @@
+const int pA = 2;   // Left front
+const int pB = 4;   // Right front
+const int pC = 5;   // Left back
+const int pD = 18;  // Right back
+
+int speed = 0;
+int turn  = 0;
+
+void setup() {
+  Serial.begin(115200);
+
+  ledcAttach(pA, 5000, 8);
+  ledcAttach(pB, 5000, 8);
+  ledcAttach(pC, 5000, 8);
+  ledcAttach(pD, 5000, 8);
+
+  // safe start
+  ledcWrite(pA, 0);
+  ledcWrite(pB, 0);
+  ledcWrite(pC, 0);
+  ledcWrite(pD, 0);
+}
+
+void loop() {
+
+  // --- TEST INPUT (simulate controller) ---
+  // change these values to see behavior
+  speed = 150;   // 0–255
+  turn  = 40;    // -255 to +255
+
+  // --- MIXING ---
+  int leftSpeed  = speed - turn;
+  int rightSpeed = speed + turn;
+
+  // --- CLAMP ---
+  leftSpeed  = constrain(leftSpeed,  0, 255);
+  rightSpeed = constrain(rightSpeed, 0, 255);
+
+  // --- APPLY TO 4 MOTORS ---
+  // Left side motors
+  ledcWrite(pA, leftSpeed);
+  ledcWrite(pC, leftSpeed);
+
+  // Right side motors
+  ledcWrite(pB, rightSpeed);
+  ledcWrite(pD, rightSpeed);
+
+  // Debug
+  Serial.print("L: "); Serial.print(leftSpeed);
+  Serial.print("  R: "); Serial.println(rightSpeed);
+
+  delay(500);
+}
