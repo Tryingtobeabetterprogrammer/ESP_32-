@@ -1,0 +1,21 @@
+const int ledPin = 2;
+
+void setup() {
+  Serial.begin(115200);
+
+  ledcAttach(ledPin, 5000, 8);  // attach PWM to pin
+}
+
+void loop() {
+  for (int duty = 0; duty <= 255; duty++) {
+    ledcWrite(ledPin, duty);
+    Serial.println(duty);
+    delay(10);
+  }
+
+  for (int duty = 255; duty >= 0; duty--) {
+    ledcWrite(ledPin, duty);
+    delay(10);
+    Serial.println(duty);
+  }
+}
