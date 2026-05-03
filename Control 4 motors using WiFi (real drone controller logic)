@@ -1,0 +1,100 @@
+#include <WiFi.h>
+
+const int pA = 2;
+const int pB = 4;
+const int pC = 5;
+const int pD = 18;
+
+String action = "";  // test value
+WiFiServer server(80);
+const char* ssid="vijay";
+const char* password="12345678";
+
+void setup() {
+  Serial.begin(115200);
+
+  ledcAttach(pA, 5000, 8);
+  ledcAttach(pB, 5000, 8);
+  ledcAttach(pC, 5000, 8);
+  ledcAttach(pD, 5000, 8);
+
+  WiFi.softAP(ssid,password);
+  Serial.println("WiFi started..");
+  Serial.println(WiFi.softAPIP());
+  server.begin();
+
+}
+
+void loop() {
+  WiFiClient client = server.available();
+  String request="";
+  if(client){
+  request = client.readStringUntil('\r');
+  Serial.println(request);
+    client.flush();
+  
+  if(request.indexOf("/forward") != -1){
+  action = "forward";
+}
+ if(request.indexOf("/backward") != -1){
+  action = "backward";
+}
+ if(request.indexOf("/right") != -1){
+  action = "right";
+}
+ if(request.indexOf("/left") != -1){
+  action = "left";
+}
+ if (request.indexOf("/stop") != -1) {
+  action = "stop";
+ }
+
+  if (action == "forward") {
+    ledcWrite(pB, 200);
+    ledcWrite(pC, 200);
+    ledcWrite(pA, 80);
+    ledcWrite(pD, 80);
+  }
+
+  if (action == "backward") {
+    ledcWrite(pB, 80);
+    ledcWrite(pC, 80);
+    ledcWrite(pA, 200);
+    ledcWrite(pD, 200);
+  }
+
+  if (action == "right") {
+    ledcWrite(pB, 200);
+    ledcWrite(pC, 80);
+    ledcWrite(pA, 200);
+    ledcWrite(pD, 80);
+  }
+
+  if (action == "left") {
+    ledcWrite(pB, 80);
+    ledcWrite(pC, 200);
+    ledcWrite(pA, 80);
+    ledcWrite(pD, 200);
+  }
+
+  if (action == "stop") {
+      ledcWrite(pA, 0);
+      ledcWrite(pB, 0);
+      ledcWrite(pC, 0);
+      ledcWrite(pD, 0);
+    }
+
+  client.println("HTTP/1.1 200 OK");
+client.println("Content-Type: text/html");
+client.println("");
+  client.println("<h1>Drone Control</h1>");
+    client.println("<a href=\"/forward\">Forward</a><br>");
+    client.println("<a href=\"/backward\">Backward</a><br>");
+    client.println("<a href=\"/left\">Left</a><br>");
+    client.println("<a href=\"/right\">Right</a><br>");
+    client.println("<a href=\"/stop\">Stop</a><br>");
+  
+    Serial.println("stopping...");
+    client.stop();
+  }
+}
