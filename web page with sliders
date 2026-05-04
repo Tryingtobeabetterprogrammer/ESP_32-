@@ -1,0 +1,45 @@
+#include<WiFi.h>
+
+
+const char* ssid="vijay";
+const char* password="12345678";
+
+String request;
+
+WiFiServer server(80);
+
+
+void setup(){
+
+  Serial.begin(115200);
+
+  WiFi.softAP(ssid, password);
+  Serial.println(WiFi.softAPIP());
+
+  server.begin();
+
+}
+
+void loop(){
+  WiFiClient client=server.available();
+  
+
+  if  (client)  {
+    request = client.readStringUntil('\r');  // correct spelling
+    Serial.println(request);
+    client.flush();
+
+
+
+    client.println("HTTP/1.1 200 OK");
+    client.println("Content-Type: text/html");
+    client.println("");
+    client.println("<h1>Drone Throttle</h1>");
+  
+    client.println("<input type=\"range\" min=\"0\" max=\"255\" value=\"0\" id=\"speedSlider\" oninput=\"sendData()\">");
+    client.println("<script>function sendData(){ let value = document.getElementById(\"speedSlider\").value;fetch(\"/?speed=\" + value);}</script>");
+   
+    
+    client.stop();
+  }
+}
