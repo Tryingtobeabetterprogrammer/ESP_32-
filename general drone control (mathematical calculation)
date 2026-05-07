@@ -1,0 +1,22 @@
+#include<wifi.h>
+#include<client.h>
+
+int speed=150;
+int turn=0;
+
+void setup(){
+  Serial.begin(115200);
+
+}
+void loop(){
+
+int leftSpeed=speed-turn;
+int rightSpeed=speed+turn;
+
+Serial.print("Left: ");
+Serial.println(leftSpeed);
+
+Serial.print("Right: ");
+Serial.println(rightSpeed);
+delay(1000);
+}
